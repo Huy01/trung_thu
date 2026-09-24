@@ -650,6 +650,8 @@ function onPointerUp(event) {
   const intersects = raycaster.intersectObjects(interactiveObjects, false);
 
   if (intersects.length > 0) {
+    startMusic();
+
     const hitMesh = intersects[0].object;
     selectedLantern = hitMesh.userData.parentLantern || hitMesh.parent;
     const lPos = selectedLantern.position;
@@ -706,19 +708,26 @@ const bgm = document.getElementById("bgm");
 const audioBtn = document.getElementById("audio-btn");
 let isPlaying = false;
 
+function startMusic() {
+  if (isPlaying) return;
+
+  bgm
+    .play()
+    .then(() => {
+      isPlaying = true;
+      audioBtn.innerHTML = '<i class="fas fa-volume-up"></i>';
+    })
+    .catch(() => {});
+}
+
 audioBtn.addEventListener("click", () => {
   if (isPlaying) {
     bgm.pause();
+    isPlaying = false;
     audioBtn.innerHTML = '<i class="fas fa-music" style="opacity:0.5;"></i>';
   } else {
-    bgm
-      .play()
-      .then(() => {
-        audioBtn.innerHTML = '<i class="fas fa-volume-up"></i>';
-      })
-      .catch(() => {});
+    startMusic();
   }
-  isPlaying = !isPlaying;
 });
 
 // ANIMATION
